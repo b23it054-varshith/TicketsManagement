@@ -25,8 +25,24 @@ const ProtectedRoute = ({ children, roles }) => {
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <Loader fullScreen />;
-  if (user) return <Navigate to="/dashboard" replace />;
+  if (user) {
+    // Redirect to appropriate dashboard based on role
+    if (user.role === 'admin') return <Navigate to="/admin" replace />;
+    return <Navigate to="/dashboard" replace />;
+  }
   return children;
+};
+
+const RoleBasedRedirect = () => {
+  const { user, loading } = useAuth();
+  if (loading) return <Loader fullScreen />;
+  if (!user) return <Navigate to="/login" replace />;
+  
+  // Redirect admin users to admin panel, everyone else to dashboard
+  if (user.role === 'admin') {
+    return <Navigate to="/admin" replace />;
+  }
+  return <Navigate to="/dashboard" replace />;
 };
 
 const AppRoutes = () => (
@@ -34,7 +50,7 @@ const AppRoutes = () => (
     <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
     <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
     <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-      <Route index element={<Navigate to="/dashboard" replace />} />
+      <Route index element={<RoleBasedRedirect />} />
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="tickets" element={<Tickets />} />
       <Route path="tickets/new" element={<CreateTicket />} />
@@ -44,7 +60,7 @@ const AppRoutes = () => (
       <Route path="reports" element={<ProtectedRoute roles={['admin', 'agent']}><Reports /></ProtectedRoute>} />
       <Route path="admin" element={<ProtectedRoute roles={['admin']}><AdminPanel /></ProtectedRoute>} />
     </Route>
-    <Route path="*" element={<Navigate to="/dashboard" replace />} />
+    <Route path="*" element={<Navigate to="/" replace />} />
   </Routes>
 );
 

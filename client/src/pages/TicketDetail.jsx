@@ -6,6 +6,7 @@ import { useSocket } from '../context/SocketContext';
 import Badge from '../components/ui/Badge';
 import Loader from '../components/ui/Loader';
 import Modal from '../components/ui/Modal';
+import TicketEditModal from '../components/tickets/TicketEditModal';
 import TicketTimeline from '../components/tickets/TicketTimeline';
 import toast from 'react-hot-toast';
 import { formatDistanceToNow, format } from 'date-fns';
@@ -52,6 +53,7 @@ export default function TicketDetail() {
   const [isInternal, setIsInternal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showRating, setShowRating] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState('');
   const [typing, setTyping] = useState('');
@@ -162,9 +164,16 @@ export default function TicketDetail() {
             <SlaTimer ticket={ticket} />
           </div>
         </div>
-        {isOwner && (ticket.status === 'resolved') && (
-          <button className="btn btn-success" id="rate-btn" onClick={() => setShowRating(true)}>⭐ Rate & Close</button>
-        )}
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {canEdit && (
+            <button className="btn btn-secondary btn-sm" onClick={() => setShowEditModal(true)} id="edit-ticket-btn">
+              ✏️ Edit
+            </button>
+          )}
+          {isOwner && (ticket.status === 'resolved' || ticket.status === 'Resolved') && (
+            <button className="btn btn-success btn-sm" id="rate-btn" onClick={() => setShowRating(true)}>⭐ Rate & Close</button>
+          )}
+        </div>
       </div>
 
       <div className="ticket-detail-grid">
@@ -247,32 +256,15 @@ export default function TicketDetail() {
 
         {/* Right Sidebar */}
         <div className="ticket-detail-sidebar">
-          {/* Status Control */}
-          {canEdit && (
+          {/* Quick Actions */}
+          {canEdit && ticket.status !== 'Closed' && ticket.status !== 'closed' && (
             <div className="detail-section">
-              <div className="detail-section-title">Update Status</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {statusFlow.map((s, i) => (
-                  <button key={s} onClick={() => handleStatusChange(s)}
-                    disabled={ticket.status === s}
-                    className={`btn btn-sm ${ticket.status === s ? 'btn-primary' : 'btn-ghost'}`}
-                    style={{ justifyContent: 'flex-start' }}>
-                    {i <= currentIdx ? '✓' : '○'} {s.replace('-', ' ')}
-                  </button>
-                ))}
+              <div className="detail-section-title">Quick Actions</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <button className="btn btn-primary btn-sm" onClick={() => setShowEditModal(true)} id="sidebar-edit-btn" style={{ width: '100%', justifyContent: 'center' }}>
+                  ✏️ Edit Ticket
+                </button>
               </div>
-            </div>
-          )}
-
-          {/* Assignment */}
-          {canEdit && (
-            <div className="detail-section">
-              <div className="detail-section-title">Assignee</div>
-              <select className="form-control" value={ticket.assignedTo?._id || ''}
-                onChange={e => handleAssign(e.target.value)} id="assign-select">
-                <option value="">Unassigned</option>
-                {agents.map(a => <option key={a._id} value={a._id}>{a.name}</option>)}
-              </select>
             </div>
           )}
 
@@ -326,6 +318,15 @@ export default function TicketDetail() {
           )}
         </div>
       </div>
+
+      {/* Ticket Edit Modal */}
+      <TicketEditModal
+        ticket={ticket}
+        agents={agents}
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        onSuccess={() => fetchTicket()}
+      />
 
       {/* Rating Modal */}
       <Modal isOpen={showRating} onClose={() => setShowRating(false)} title="Rate this support experience"

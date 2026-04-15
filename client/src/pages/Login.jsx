@@ -9,19 +9,35 @@ export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
+  const [selectedRole, setSelectedRole] = useState('user'); // Track selected demo role
+
+  const demoAccounts = {
+    user: { email: 'user@demo.com', password: 'password123', label: 'User Account', color: 'blue' },
+    agent: { email: 'agent@demo.com', password: 'password123', label: 'Support Agent', color: 'purple' },
+    admin: { email: 'admin@demo.com', password: 'password123', label: 'Admin', color: 'red' }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       const user = await login(form.email, form.password);
-      toast.success(`Welcome back, ${user.name.split(' ')[0]}! 👋`);
-      navigate('/dashboard');
+      const roleLabel = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+      toast.success(`Welcome ${roleLabel}! 👋`);
+      
+      // Navigation happens automatically via App.jsx routing
+      navigate(user.role === 'admin' ? '/admin' : '/dashboard');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Login failed');
     } finally {
       setLoading(false);
     }
+  };
+
+  const fillDemoAccount = (role) => {
+    const account = demoAccounts[role];
+    setForm({ email: account.email, password: account.password });
+    setSelectedRole(role);
   };
 
   return (
@@ -86,16 +102,38 @@ export default function Login() {
           <Link to="/register" className="auth-link">Create an account →</Link>
         </div>
 
-        {/* Demo credentials hint */}
+        {/* Demo credentials with role selection */}
         <div style={{
           marginTop: 22, padding: '12px 14px',
           background: 'var(--accent-dim)', borderRadius: 8,
-          border: '1px solid var(--accent)', fontSize: 12
+          border: '1px solid var(--accent)'
         }}>
-          <div style={{ fontWeight: 700, color: 'var(--accent-hover)', marginBottom: 6 }}>💡 Demo Accounts</div>
-          <div style={{ color: 'var(--text-secondary)' }}>Admin: admin@demo.com / password123</div>
-          <div style={{ color: 'var(--text-secondary)' }}>Agent: agent@demo.com / password123</div>
-          <div style={{ color: 'var(--text-secondary)' }}>User: user@demo.com / password123</div>
+          <div style={{ fontWeight: 700, color: 'var(--accent-hover)', marginBottom: 10, fontSize: 12 }}>💡 Quick Demo Access</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+            {['user', 'agent', 'admin'].map((role) => (
+              <button
+                key={role}
+                type="button"
+                onClick={() => fillDemoAccount(role)}
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: 6,
+                  border: '1px solid var(--border)',
+                  background: selectedRole === role ? 'var(--accent-hover)' : 'transparent',
+                  color: selectedRole === role ? 'white' : 'var(--text-secondary)',
+                  fontSize: 11,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {demoAccounts[role].label}
+              </button>
+            ))}
+          </div>
+          <div style={{ color: 'var(--text-secondary)', fontSize: 11, marginTop: 10 }}>
+            Click a role above to auto-fill credentials
+          </div>
         </div>
       </div>
     </div>

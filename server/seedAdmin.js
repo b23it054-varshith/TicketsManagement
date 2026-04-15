@@ -8,7 +8,7 @@ const createAdmin = async () => {
 
     const adminEmail = 'admin@yourcompany.com';
     const adminPassword = 'SecurePass123!';
-    const adminName = 'System Admin';
+    const adminName = 'Admin';
 
     let admin = await User.findOne({ role: 'admin' });
     if (admin) {
