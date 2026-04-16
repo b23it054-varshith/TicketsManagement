@@ -9,7 +9,6 @@ const navItems = [
 ];
 
 const adminItems = [
-  { to: '/reports', icon: '📈', label: 'Reports', roles: ['admin', 'agent'] },
   { to: '/admin', icon: '⚙️', label: 'Admin Panel', roles: ['admin'] },
 ];
 
@@ -45,7 +44,7 @@ export default function Sidebar() {
           </NavLink>
         ))}
 
-        {(user?.role === 'admin' || user?.role === 'agent') && (
+        {user?.role === 'admin' && (
           <>
             <div className="sidebar-section-label" style={{ marginTop: 8 }}>Management</div>
             {adminItems.filter(i => visible(i.roles)).map(item => (
@@ -76,9 +75,7 @@ export default function Sidebar() {
       </div>
 
       <div className="sidebar-user">
-        <div className="sidebar-avatar">
-          {user?.avatar ? <img src={user.avatar} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : initials}
-        </div>
+        <div className="sidebar-avatar">{initials}</div>
         <div className="sidebar-user-info">
           <div className="sidebar-user-name">{user?.name}</div>
           <div className="sidebar-user-role">{user?.role}</div>

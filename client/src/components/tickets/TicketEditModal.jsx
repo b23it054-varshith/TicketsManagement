@@ -54,7 +54,7 @@ export default function TicketEditModal({ ticket, agents, isOpen, onClose, onSuc
 
   if (!isOpen || !ticket) return null;
 
-  const statusFlow = ['Open', 'In Progress', 'Pending', 'Resolved', 'Closed'];
+  const statusFlow = ['Open', 'In Progress', 'Resolved', 'Closed'];
   const currentStatusIdx = statusFlow.findIndex(s => s.toLowerCase() === ticket.status.toLowerCase());
 
   return (

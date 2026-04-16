@@ -15,22 +15,6 @@ const commentSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Comment content is required'],
     trim: true
-  },
-  isInternal: {
-    type: Boolean,
-    default: false  // internal notes only visible to agents/admins
-  },
-  attachments: [
-    {
-      filename: String,
-      originalName: String,
-      mimetype: String,
-      size: Number
-    }
-  ],
-  editedAt: {
-    type: Date,
-    default: null
   }
 }, { timestamps: true });
 

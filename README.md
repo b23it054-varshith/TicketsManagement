@@ -1,158 +1,99 @@
-# TicketFlow — MERN Support Ticket Management System
+# Ticket Management System
 
-A full-stack support ticket management system built with MongoDB, Express, React, and Node.js.
+A full-stack web application built with the **MERN Stack** (MongoDB, Express, React, Node.js) that allows users to raise support tickets, agents to resolve them, and admins to manage everything.
 
----
+## Features
 
-## Quick Start
+- **User Registration & Login** — JWT-based authentication
+- **Raise Tickets** — Users can create tickets with category and priority
+- **Ticket Management** — Agents can update status and reply to tickets
+- **Admin Panel** — Manage all users and tickets
+- **Knowledge Base** — Self-help articles for common issues
+- **Role-based Access** — Three roles: User, Agent, Admin
 
-### Prerequisites
-- Node.js 18+
-- MongoDB (local or Atlas)
+## Tech Stack
 
-### 1. Clone / Extract the project
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React (Vite), React Router |
+| Backend | Node.js, Express.js |
+| Database | MongoDB, Mongoose |
+| Auth | JWT (JSON Web Token) |
+
+## Project Structure
 
 ```
-Miniproject_MERN/
-├── server/   ← Node.js + Express backend
-└── client/   ← React (Vite) frontend
+├── client/          # React frontend (Vite)
+│   └── src/
+│       ├── pages/       # Login, Register, Dashboard, Tickets, etc.
+│       ├── components/  # Reusable UI components
+│       ├── context/     # AuthContext (global user state)
+│       └── services/    # API calls (axios)
+├── server/          # Node.js + Express backend
+│   ├── models/      # Mongoose schemas (User, Ticket, Comment)
+│   ├── routes/      # API route handlers
+│   ├── middleware/  # JWT auth middleware
+│   └── server.js   # Entry point
 ```
 
-### 2. Configure the server
+## Setup & Run
 
-Edit `server/.env` if needed:
-
-```env
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/ticketsystem
-JWT_SECRET=ticket_system_super_secret_jwt_key_2024_miniproject
-JWT_REFRESH_SECRET=ticket_system_refresh_secret_key_2024_miniproject
-JWT_EXPIRE=7d
-JWT_REFRESH_EXPIRE=30d
-NODE_ENV=development
-CLIENT_URL=http://localhost:5173
+### 1. Clone the repository
+```bash
+git clone <repo-url>
+cd Miniproject_MERN
 ```
 
-> Using MongoDB Atlas? Replace `MONGO_URI` with your Atlas connection string.
-
-### 3. Install & run the server
-
+### 2. Setup Server
 ```bash
 cd server
 npm install
-npm run dev
 ```
 
-Server starts at **http://localhost:5000**
+Create a `.env` file in the `server/` folder:
+```
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+CLIENT_URL=http://localhost:5173
+```
 
-### 4. Install & run the client
+Start the server:
+```bash
+node server.js
+```
 
+### 3. Setup Client
 ```bash
 cd client
 npm install
 npm run dev
 ```
 
-Client starts at **http://localhost:5173**
-
----
-
-## Demo Accounts
-
-Seed the database or register accounts manually. The login page shows:
-
-| Role  | Email             | Password    |
-|-------|-------------------|-------------|
-| Admin | admin@demo.com    | password123 |
-| Agent | agent@demo.com    | password123 |
-| User  | user@demo.com     | password123 |
-
-To create an admin account quickly, register normally then update the role in MongoDB:
-```js
-db.users.updateOne({ email: "admin@demo.com" }, { $set: { role: "admin" } })
+### 4. Seed Admin User
+```bash
+cd server
+node seedAdmin.js
 ```
+This creates a default admin account:
+- **Email:** admin@ticketflow.com
+- **Password:** admin123
 
----
+## API Endpoints
 
-## Features
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | /api/auth/register | Register new user |
+| POST | /api/auth/login | Login |
+| GET | /api/tickets | Get all tickets |
+| POST | /api/tickets | Create ticket |
+| PUT | /api/tickets/:id | Update ticket |
+| POST | /api/tickets/:id/comments | Add comment |
+| GET | /api/users | Get all users (admin) |
+| GET | /api/kb | Get knowledge base articles |
 
-### All Users
-- Register / Login with JWT auth
-- Create tickets with category, priority, description, attachments
-- Real-time status updates via Socket.IO
-- SLA countdown timer per ticket
-- Comment/reply thread on each ticket
-- Star rating after resolution
-- Profile management with avatar upload
-- Notification bell with real-time alerts
-- Knowledge Base (FAQ)
+## User Roles
 
-### Agents
-- View and manage assigned tickets
-- Update ticket status (Open → In Progress → Resolved → Closed)
-- Add internal notes (not visible to users)
-- View own performance stats
-
-### Admins
-- Full dashboard with live stats and charts
-- Assign/reassign tickets to agents
-- Smart auto-assignment (round-robin by workload)
-- User management (roles, activate/deactivate)
-- Reports: category, priority, agent performance
-- Knowledge Base article management
-- Audit timeline per ticket
-
----
-
-## Tech Stack
-
-| Layer     | Technology                          |
-|-----------|-------------------------------------|
-| Frontend  | React 18 (Vite), React Router v6   |
-| Styling   | Custom CSS (dark theme)             |
-| Charts    | Recharts                            |
-| Real-time | Socket.IO                           |
-| HTTP      | Axios                               |
-| Backend   | Node.js, Express.js                 |
-| Database  | MongoDB (Mongoose)                  |
-| Auth      | JWT (access + refresh tokens)       |
-| Uploads   | Multer (local disk)                 |
-
----
-
-## Project Structure
-
-```
-server/
-├── config/db.js              # MongoDB connection
-├── middleware/
-│   ├── auth.js               # JWT protect + authorize
-│   └── upload.js             # Multer file upload
-├── models/
-│   ├── User.js
-│   ├── Ticket.js
-│   ├── Comment.js
-│   ├── Notification.js
-│   └── KnowledgeBase.js
-├── routes/
-│   ├── auth.js
-│   ├── tickets.js
-│   ├── users.js
-│   ├── notifications.js
-│   └── knowledgebase.js
-├── socket/socketHandler.js   # Socket.IO events
-└── server.js
-
-client/src/
-├── components/
-│   ├── dashboard/            # StatsCards, TicketChart, RecentActivity
-│   ├── layout/               # Sidebar, Navbar, Layout
-│   ├── notifications/        # NotificationPanel
-│   ├── tickets/              # TicketCard, TicketForm, TicketTimeline
-│   └── ui/                   # Badge, Modal, Loader
-├── context/                  # AuthContext, SocketContext
-├── hooks/                    # useTickets, useTicket
-├── pages/                    # All page components
-├── services/api.js           # Axios + all API calls
-└── styles/index.css          # Global dark theme
-```
+- **User** — Can raise tickets and view their own tickets
+- **Agent** — Can view assigned tickets and update status
+- **Admin** — Full access to all tickets, users, and the admin panel

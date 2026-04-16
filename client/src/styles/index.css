@@ -2,22 +2,22 @@
    TICKETFLOW — Premium Dark Theme Design System
    ============================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 /* ── CSS Variables ── */
 :root {
-  --bg-primary: #0d1117;
-  --bg-secondary: #161b27;
-  --bg-card: #1e2433;
-  --bg-hover: #252d3d;
-  --bg-input: #1a2030;
+  --bg-primary: #0a0c10;
+  --bg-secondary: rgba(18, 24, 38, 0.7);
+  --bg-card: rgba(22, 28, 45, 0.85);
+  --bg-hover: rgba(30, 41, 59, 1);
+  --bg-input: rgba(15, 23, 42, 0.6);
 
-  --border: #2a3347;
-  --border-light: #3a4556;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-light: rgba(255, 255, 255, 0.12);
 
-  --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted: #566880;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
 
   --accent: #6366f1;
   --accent-hover: #818cf8;
@@ -42,19 +42,19 @@
   --status-resolved: #10b981;
   --status-closed: #6b7280;
 
-  --radius-sm: 6px;
-  --radius: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.25);
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 25px rgba(99, 102, 241, 0.3);
 
-  --transition: 0.2s ease;
-  --sidebar-width: 240px;
-  --navbar-height: 64px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --sidebar-width: 260px;
+  --navbar-height: 72px;
 }
 
 /* ── Reset ── */
@@ -71,8 +71,10 @@ html {
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Outfit', sans-serif;
   background: var(--bg-primary);
+  background-image: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
+                    radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
@@ -168,6 +170,8 @@ h4 {
   height: 100vh;
   background: var(--bg-secondary);
   border-right: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   display: flex;
   flex-direction: column;
   z-index: 100;
@@ -305,6 +309,8 @@ h4 {
   right: 0;
   height: var(--navbar-height);
   background: var(--bg-secondary);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -410,10 +416,11 @@ h4 {
 /* ── Cards ── */
 .card {
   background: var(--bg-card);
+  backdrop-filter: blur(10px);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 24px;
-  transition: box-shadow var(--transition);
+  transition: all var(--transition);
 }
 
 .card:hover {
@@ -436,6 +443,7 @@ h4 {
 
 .stat-card {
   background: var(--bg-card);
+  backdrop-filter: blur(10px);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 20px;

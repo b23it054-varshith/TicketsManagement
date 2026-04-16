@@ -339,7 +339,7 @@ export default function AdminPanel() {
                 onChange={e => setTicketUpdate(prev => ({ ...prev, status: e.target.value }))}
                 id={`ticket-status-${editTicket._id}`}
               >
-                {['Open', 'In Progress', 'Pending', 'Resolved', 'Closed'].map(s => (
+                {['Open', 'In Progress', 'Resolved', 'Closed'].map(s => (
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>

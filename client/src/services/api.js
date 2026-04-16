@@ -2,32 +2,22 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api',
-  withCredentials: true,
 });
 
-// Attach token to every request
+// Attach JWT token to every request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-// Auto-refresh on 401
+// Redirect to login on 401
 api.interceptors.response.use(
   (res) => res,
-  async (err) => {
-    const original = err.config;
-    if (err.response?.status === 401 && !original._retry) {
-      original._retry = true;
-      try {
-        const { data } = await axios.post('/api/auth/refresh', {}, { withCredentials: true });
-        localStorage.setItem('accessToken', data.accessToken);
-        original.headers.Authorization = `Bearer ${data.accessToken}`;
-        return api(original);
-      } catch {
-        localStorage.removeItem('accessToken');
-        window.location.href = '/login';
-      }
+  (err) => {
+    if (err.response?.status === 401) {
+      localStorage.removeItem('accessToken');
+      window.location.href = '/login';
     }
     return Promise.reject(err);
   }
@@ -50,7 +40,6 @@ export const ticketsAPI = {
   delete: (id) => api.delete(`/tickets/${id}`),
   getStats: () => api.get('/tickets/stats'),
   addComment: (id, data) => api.post(`/tickets/${id}/comments`, data),
-  rate: (id, data) => api.post(`/tickets/${id}/rating`, data),
 };
 
 // Users
@@ -60,16 +49,6 @@ export const usersAPI = {
   getOne: (id) => api.get(`/users/${id}`),
   update: (id, data) => api.put(`/users/${id}`, data),
   updateProfile: (data) => api.put('/users/profile', data),
-  uploadAvatar: (data) => api.post('/users/avatar', data),
-  getStats: (id) => api.get(`/users/${id}/stats`),
-};
-
-// Notifications
-export const notificationsAPI = {
-  getAll: () => api.get('/notifications'),
-  markRead: (id) => api.put(`/notifications/${id}/read`),
-  markAllRead: () => api.put('/notifications/read-all'),
-  delete: (id) => api.delete(`/notifications/${id}`),
 };
 
 // Knowledge Base

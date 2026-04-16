@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ticketsAPI } from '../services/api';
-import { useSocket } from '../context/SocketContext';
 import { useAuth } from '../context/AuthContext';
 import Badge from '../components/ui/Badge';
 import Loader from '../components/ui/Loader';
@@ -16,7 +15,6 @@ const VIEWS = ['list', 'kanban'];
 export default function Tickets() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { socket } = useSocket();
   const [searchParams] = useSearchParams();
 
   const [tickets, setTickets] = useState([]);
@@ -39,18 +37,12 @@ export default function Tickets() {
       const { data } = await ticketsAPI.getAll(params);
       setTickets(data.tickets);
       setTotal(data.total);
-    } catch {}
-    finally { setLoading(false); }
+    } catch (err) {
+      console.error("Tickets load error", err);
+    } finally { setLoading(false); }
   }, [filters]);
 
   useEffect(() => { fetchTickets(); }, [fetchTickets]);
-
-  useEffect(() => {
-    if (!socket) return;
-    socket.on('ticket_created', fetchTickets);
-    socket.on('ticket_updated', fetchTickets);
-    return () => { socket.off('ticket_created'); socket.off('ticket_updated'); };
-  }, [socket, fetchTickets]);
 
   const setFilter = (key, val) => setFilters(prev => ({ ...prev, [key]: val, page: 1 }));
 

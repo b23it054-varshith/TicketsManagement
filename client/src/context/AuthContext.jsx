@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Check if user is already logged in on page load
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
     if (token) {
@@ -35,7 +36,6 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const logout = useCallback(async () => {
-    try { await authAPI.logout(); } catch {}
     localStorage.removeItem('accessToken');
     setUser(null);
     toast.success('Logged out successfully');
