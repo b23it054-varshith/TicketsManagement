@@ -12,18 +12,6 @@ const priorityColors = {
 export default function TicketCard({ ticket, compact = false }) {
   const navigate = useNavigate();
 
-  const timeLeft = () => {
-    if (!ticket.sla?.deadline) return null;
-    const diff = new Date(ticket.sla.deadline) - Date.now();
-    if (diff <= 0) return { label: 'SLA Breached', level: 'breach' };
-    const h = Math.floor(diff / 3600000);
-    if (h < 2) return { label: `${h}h left`, level: 'warn' };
-    if (h < 8) return { label: `${h}h left`, level: 'ok' };
-    return null;
-  };
-
-  const sla = timeLeft();
-
   return (
     <div
       className="ticket-card"
@@ -37,20 +25,6 @@ export default function TicketCard({ ticket, compact = false }) {
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
             <span className="ticket-id">{ticket.ticketId}</span>
-            {sla && (
-              <span
-                style={{
-                  fontSize: 10,
-                  padding: '2px 6px',
-                  borderRadius: 4,
-                  fontWeight: 700,
-                  background: sla.level === 'breach' ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)',
-                  color: sla.level === 'breach' ? '#ef4444' : '#f59e0b',
-                }}
-              >
-                ⏱ {sla.label}
-              </span>
-            )}
           </div>
           <div className="ticket-title">{ticket.title}</div>
           {!compact && ticket.description && (

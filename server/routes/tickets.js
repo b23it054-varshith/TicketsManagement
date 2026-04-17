@@ -5,11 +5,6 @@ const Comment = require('../models/Comment');
 const User = require('../models/User');
 const { protect, authorize } = require('../middleware/auth');
 
-// Helper: auto-assign to available agent
-const autoAssignAgent = async () => {
-  const agent = await User.findOne({ role: 'agent', isActive: true });
-  return agent ? agent._id : null;
-};
 
 // @route GET /api/tickets
 router.get('/', protect, async (req, res) => {
@@ -54,16 +49,13 @@ router.post('/', protect, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Title, description and category are required' });
     }
 
-    const assignedTo = await autoAssignAgent();
-
     const ticket = await Ticket.create({
       title,
       description,
       category,
       priority,
       department,
-      createdBy: req.user._id,
-      assignedTo
+      createdBy: req.user._id
     });
 
     const populated = await ticket.populate([

@@ -4,51 +4,46 @@ const articles = [
   {
     id: 1, category: 'Getting Started', icon: '🚀',
     title: 'How to create a support ticket',
-    content: 'Navigate to Tickets → New Ticket. Fill in the subject, description, category, and priority. Attach any relevant files. Click Submit — our system will auto-assign an agent based on current workload.'
+    content: 'Navigate to Tickets → New Ticket. Fill in the subject, description, category, and priority. Click Submit — our system will assign a support agent to handle your request.'
   },
   {
     id: 2, category: 'Getting Started', icon: '🔍',
     title: 'How to track your ticket status',
-    content: 'Visit the Tickets page to see all your submitted tickets. Each ticket shows its current status: Open, In Progress, Resolved, or Closed. You\'ll also receive real-time notifications when the status changes.'
+    content: 'Visit the Tickets page to see all your submitted tickets. Each ticket shows its current status: Open, In Progress, Resolved, or Closed. Status updates are visible whenever you refresh the page.'
   },
   {
     id: 3, category: 'Account', icon: '👤',
     title: 'How to update your profile',
-    content: 'Click your avatar in the top-right corner or navigate to Profile from the sidebar. You can update your name, phone, department, and upload a profile picture.'
+    content: 'Click your avatar in the top-right corner or navigate to Profile from the sidebar. You can update your name, phone, and department information.'
   },
   {
     id: 4, category: 'Tickets', icon: '⏱️',
-    title: 'Understanding SLA timers',
-    content: 'SLA (Service Level Agreement) defines how quickly each priority ticket must be resolved: Critical: 2 hours, High: 8 hours, Medium: 24 hours, Low: 72 hours. Tickets approaching or past the deadline are highlighted in orange/red.'
+    title: 'Ticket Priorities',
+    content: 'Tickets are categorized by priority to help agents focus on urgent issues: Critical, High, Medium, and Low. Agents aim to resolve Critical issues as quickly as possible.'
   },
   {
-    id: 5, category: 'Tickets', icon: '📎',
-    title: 'Attaching files to tickets',
-    content: 'When creating a ticket, drag and drop files into the attachment area or click Browse. Supported formats: images (JPG, PNG, GIF), documents (PDF, DOC, TXT), archives (ZIP, RAR). Maximum file size: 10MB per file, up to 5 files.'
+    id: 5, category: 'Tickets', icon: '🏷️',
+    title: 'Ticket Categories',
+    content: 'When creating a ticket, choose the category that best fits your issue: Hardware, Software, Network, Account, etc. This helps the correct department find your ticket faster.'
   },
   {
-    id: 6, category: 'Tickets', icon: '⭐',
-    title: 'Rating resolved tickets',
-    content: 'Once your ticket is marked as Resolved by an agent, you can rate the experience. Open the ticket and click the "Rate & Close" button. Select 1–5 stars and optionally leave feedback. This closes the ticket permanently.'
+    id: 6, category: 'Tickets', icon: '✅',
+    title: 'Closing resolved tickets',
+    content: 'Once an agent has resolved your issue, they will mark the ticket as Resolved. You can view the resolution details in the ticket thread. Tickets are eventually marked as Closed.'
   },
   {
-    id: 7, category: 'Agents', icon: '🔒',
-    title: 'Internal notes for agents',
-    content: 'Agents can add internal notes on tickets that are only visible to other agents and admins — not to the user who submitted the ticket. Enable this by checking the "Internal note" checkbox when replying.'
+    id: 7, category: 'Agents', icon: '👨‍🔧',
+    title: 'Agent Responsibilities',
+    content: 'Agents are responsible for picking up open tickets, communicating with the users via comments, and setting the ticket status to Resolved once the issue is fixed.'
   },
   {
     id: 8, category: 'Agents', icon: '🔁',
-    title: 'Auto-assignment system',
-    content: 'When a new ticket is created, the system automatically assigns it to the agent with the lowest current workload (round-robin by open ticket count). Admins can manually reassign tickets from the ticket detail page.'
-  },
-  {
-    id: 9, category: 'Notifications', icon: '🔔',
-    title: 'Real-time notifications',
-    content: 'TicketFlow uses Socket.IO to push real-time notifications. You\'ll be notified when: a ticket is assigned to you, a reply is added to your ticket, or a ticket\'s status changes. Click the bell icon in the top-right to view all notifications.'
-  },
+    title: 'Assignment System',
+    content: 'When a new ticket is created, it is assigned to an available agent. Managers or Admins can also manually reassign tickets to different agents from the management panel.'
+  }
 ];
 
-const CATEGORIES = ['All', 'Getting Started', 'Tickets', 'Account', 'Agents', 'Notifications'];
+const CATEGORIES = ['All', 'Getting Started', 'Tickets', 'Account', 'Agents'];
 
 export default function KnowledgeBase() {
   const [search, setSearch] = useState('');
@@ -66,7 +61,7 @@ export default function KnowledgeBase() {
       <div className="page-header">
         <div>
           <h1 className="page-title">📚 Knowledge Base</h1>
-          <p className="page-subtitle">Find answers to common questions and learn how to get the most out of TicketFlow</p>
+          <p className="page-subtitle">Find answers to common questions and learn how to use the Ticket Management System</p>
         </div>
       </div>
 
