@@ -107,7 +107,6 @@ export default function AdminPanel() {
             { label: 'Open Tickets', value: stats?.open || 0, icon: '🔴', color: 'red' },
             { label: 'In Progress', value: stats?.inProgress || 0, icon: '🟡', color: 'orange' },
             { label: 'Resolved', value: stats?.resolved || 0, icon: '✅', color: 'green' },
-            { label: 'SLA Breached', value: stats?.slaBreached || 0, icon: '🚨', color: 'red' },
           ].map(s => (
             <div key={s.label} className={`stat-card ${s.color}`}>
               <div className={`stat-icon ${s.color}`}>{s.icon}</div>

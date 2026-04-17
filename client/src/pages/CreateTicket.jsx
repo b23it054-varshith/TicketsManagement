@@ -17,19 +17,16 @@ export default function CreateTicket() {
     priority: 'Medium',
     department: user?.department || 'General',
   });
-  const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [dragOver, setDragOver] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.title.trim() || !form.description.trim()) return toast.error('Title and description required');
+    
     setLoading(true);
     try {
-      const formData = new FormData();
-      Object.entries(form).forEach(([k, v]) => formData.append(k, v));
-      files.forEach(f => formData.append('attachments', f));
-      const { data } = await ticketsAPI.create(formData);
+      // Switched from FormData to JSON for simplicity and compatibility
+      const { data } = await ticketsAPI.create(form);
       toast.success(`Ticket ${data.ticket.ticketId} created! 🎉`);
       navigate(`/tickets/${data.ticket._id}`);
     } catch (err) {
@@ -39,14 +36,12 @@ export default function CreateTicket() {
     }
   };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setDragOver(false);
-    const newFiles = Array.from(e.dataTransfer.files).slice(0, 5);
-    setFiles(prev => [...prev, ...newFiles].slice(0, 5));
+  const priorityColors = { 
+    Low: 'var(--success)', 
+    Medium: 'var(--warning)', 
+    High: 'var(--priority-high)', 
+    Critical: 'var(--danger)' 
   };
-
-  const priorityColors = { Low: 'var(--success)', Medium: 'var(--warning)', High: 'var(--priority-high)', Critical: 'var(--danger)' };
 
   return (
     <div style={{ maxWidth: 720 }}>
@@ -71,7 +66,7 @@ export default function CreateTicket() {
           <div className="form-group">
             <label className="form-label" htmlFor="ticket-desc">Description *</label>
             <textarea id="ticket-desc" className="form-control"
-              placeholder="Provide detailed information about your issue, steps to reproduce, expected vs actual behavior…"
+              placeholder="Provide detailed information about your issue..."
               rows={6}
               value={form.description}
               onChange={e => setForm({ ...form, description: e.target.value })}
@@ -79,7 +74,7 @@ export default function CreateTicket() {
           </div>
         </div>
 
-        <div className="card" style={{ marginBottom: 16 }}>
+        <div className="card" style={{ marginBottom: 24 }}>
           <div className="form-row">
             <div className="form-group">
               <label className="form-label" htmlFor="ticket-category">Category</label>
@@ -97,12 +92,12 @@ export default function CreateTicket() {
             </div>
           </div>
 
-          {/* Priority Selector */}
-          <div className="form-group">
+          <div className="form-group" style={{ marginTop: 12 }}>
             <label className="form-label">Priority</label>
             <div style={{ display: 'flex', gap: 10 }}>
               {PRIORITIES.map(p => (
                 <button key={p} type="button"
+                  id={`priority-${p.toLowerCase()}`}
                   onClick={() => setForm({ ...form, priority: p })}
                   style={{
                     flex: 1, padding: '9px 8px', borderRadius: 8, border: `2px solid`,
@@ -112,43 +107,11 @@ export default function CreateTicket() {
                     fontWeight: 600, fontSize: 12, cursor: 'pointer', textTransform: 'capitalize',
                     transition: 'all 0.2s'
                   }}>
-                  {p === 'critical' ? '⚡' : p === 'high' ? '↑' : p === 'medium' ? '→' : '↓'} {p}
+                  {p === 'Critical' ? '⚡' : p === 'High' ? '↑' : p === 'Medium' ? '→' : '↓'} {p}
                 </button>
               ))}
             </div>
           </div>
-        </div>
-
-        {/* File Upload */}
-        <div className="card" style={{ marginBottom: 24 }}>
-          <label className="form-label">Attachments (max 5 files, 10MB each)</label>
-          <div
-            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-            onDragLeave={() => setDragOver(false)}
-            onDrop={handleDrop}
-            style={{
-              border: `2px dashed ${dragOver ? 'var(--accent)' : 'var(--border)'}`,
-              borderRadius: 10, padding: '24px', textAlign: 'center',
-              background: dragOver ? 'var(--accent-dim)' : 'var(--bg-input)',
-              transition: 'all 0.2s', cursor: 'pointer'
-            }}
-            onClick={() => document.getElementById('file-upload').click()}>
-            <input id="file-upload" type="file" multiple style={{ display: 'none' }}
-              onChange={e => setFiles(Array.from(e.target.files).slice(0, 5))} />
-            <div style={{ fontSize: 28, marginBottom: 8 }}>📎</div>
-            <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Drag & drop files here or <span style={{ color: 'var(--accent-hover)', fontWeight: 600 }}>browse</span></p>
-          </div>
-          {files.length > 0 && (
-            <div style={{ marginTop: 12, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {files.map((f, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--bg-hover)', padding: '4px 10px', borderRadius: 6, fontSize: 12 }}>
-                  📄 {f.name}
-                  <button type="button" onClick={() => setFiles(files.filter((_, fi) => fi !== i))}
-                    style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer', fontSize: 14, lineHeight: 1 }}>×</button>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
 
         <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>

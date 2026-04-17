@@ -6,8 +6,8 @@ const createAdmin = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/ticket-system');
 
-    const adminEmail = 'admin@yourcompany.com';
-    const adminPassword = 'SecurePass123!';
+    const adminEmail = 'admin@ticketflow.com';
+    const adminPassword = 'admin123';
     const adminName = 'Admin';
 
     let admin = await User.findOne({ role: 'admin' });
